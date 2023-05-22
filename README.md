@@ -1,10 +1,12 @@
 # Gameloader
 <br>
-```HTML
-<script crossorigin="anonymous" defer="defer" type="application/javascript" src="https://cdn.jsdelivr.net/gh/MortalSoft/Gameloader@main/sg.js"></script>
+
+```php
+<script type="application/javascript" src="https://cdn.jsdelivr.net/gh/MortalSoft/Gameloader@main/sg.js"></script>
 ```
-<br>
-Example of usage:<br>
+
+Example of usage:
+
 ```js
 var options = {
     target_element: "your-target-element-id",
@@ -28,8 +30,8 @@ Sg.launch(options, successCallback, errorCallback);
 
 ```
 
-Demo games should launch with empty token: <br>
-<br>
+Demo games should launch with empty token: 
+
 ```js
 var options = {
     target_element: "your-target-element-id",
