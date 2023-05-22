@@ -1,6 +1,10 @@
 # Gameloader
-
-Example of usage:
+<br>
+```html
+<script crossorigin="anonymous" defer="defer" type="application/javascript" src="https://cdn.jsdelivr.net/gh/MortalSoft/Gameloader@main/sg.js"></script>
+```
+<br>
+Example of usage:<br>
 ```js
 var options = {
     target_element: "your-target-element-id",
@@ -26,6 +30,15 @@ Sg.launch(options, successCallback, errorCallback);
 
 Demo games should launch with empty token: <br>
 <br>
-token: ""
+```js
+var options = {
+    target_element: "your-target-element-id",
+    launch_options: {
+        strategy: "iframe",
+        game_url: "your-game-url",
+        token: ""
+    }
+};
+```
 
 
