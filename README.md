@@ -25,7 +25,7 @@ function errorCallback(error) {
     console.error("An error occurred:", error);
 }
 
-Sg.launch(options, successCallback, errorCallback);
+window.sg.launch(options, successCallback, errorCallback);
 
 
 ```
