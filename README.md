@@ -1,6 +1,6 @@
 # Gameloader
 <br>
-```html
+```HTML
 <script crossorigin="anonymous" defer="defer" type="application/javascript" src="https://cdn.jsdelivr.net/gh/MortalSoft/Gameloader@main/sg.js"></script>
 ```
 <br>
