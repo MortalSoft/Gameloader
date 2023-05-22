@@ -1,7 +1,7 @@
 # Gameloader
 <br>
 
-```php
+```html
 <script type="application/javascript" src="https://cdn.jsdelivr.net/gh/MortalSoft/Gameloader@main/sg.js"></script>
 ```
 
