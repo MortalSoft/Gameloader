@@ -23,3 +23,9 @@ Sg.launch(options, successCallback, errorCallback);
 
 
 ```
+
+Demo games should launch with empty token: <br>
+<br>
+token: ""
+
+
