@@ -12,17 +12,20 @@ var Sg;
             })
             .then(function(response) {
                 if (response.ok) {
-                    var iframe = document.createElement("iframe");
-                    iframe.src = uri;
-                    iframe.setAttribute("allowfullscreen", "true");
-                    target.appendChild(iframe);
-                    return callbacks.success();
+                    return response.text();
                 } else {
                     throw new Error("Failed to fetch iframe: " + response.status);
                 }
             })
+            .then(function(content) {
+                var iframe = document.createElement("iframe");
+                iframe.srcdoc = content;
+                iframe.setAttribute("allowfullscreen", "true");
+                target.appendChild(iframe);
+                callbacks.success();
+            })
             .catch(function(error) {
-                return callbacks.error(error);
+                callbacks.error(error);
             });
     }
 
@@ -30,28 +33,32 @@ var Sg;
         var callbacks = {
             success: function() {
                 if (sc) {
-                    return sc();
+                    sc();
                 }
             },
             error: function(e) {
                 if (ec) {
-                    return ec(e);
+                    ec(e);
                 }
             }
         };
+
         var target = document.getElementById(options.target_element);
         if (!target) {
             callbacks.error("No element with id '".concat(options.target_element, "' found"));
             return;
         }
+
         var lo = options.launch_options;
         switch (lo.strategy) {
             case "redirect":
-                return win.location = lo.game_url;
+                win.location = lo.game_url;
+                break;
             case "iframe":
-                return createIframe(target, lo.game_url, lo.token, callbacks);
+                createIframe(target, lo.game_url, lo.token, callbacks);
+                break;
             default:
-                return Error("Unexpected launch strategy");
+                throw new Error("Unexpected launch strategy");
         }
     }
 
