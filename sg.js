@@ -4,12 +4,9 @@ var Sg;
     var win = window;
 
     function createIframe(target, uri, token, callbacks) {
-        var headers = new Headers();
-        headers.append("Authorization", token);
+        let game = uri + "/" + token;
 
-        fetch(uri, {
-                headers: headers
-            })
+        fetch(game)
             .then(function(response) {
                 if (response.ok) {
                     return response.text();
@@ -18,9 +15,12 @@ var Sg;
                 }
             })
             .then(function(content) {
+                var iframeUrl = new URL(game);
+
                 var iframe = document.createElement("iframe");
-                iframe.srcdoc = content;
+                iframe.src = iframeUrl.toString();
                 iframe.setAttribute("allowfullscreen", "true");
+
                 target.appendChild(iframe);
                 callbacks.success();
             })
