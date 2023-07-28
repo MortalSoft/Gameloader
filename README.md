@@ -2,7 +2,7 @@
 <br>
 
 ```html
-<script type="application/javascript" src="https://cdn.jsdelivr.net/gh/MortalSoft/Gameloader@main/sg.js"></script>
+<script type="application/javascript" src="https://cdn.jsdelivr.net/gh/MortalSoft/Gameloader@main/sg.min.js"></script>
 ```
 
 Example of usage:
@@ -34,7 +34,7 @@ Demo games should launch with empty token:
 
 ```js
 var options = {
-    target_element: "your-target-element-id",
+    target_element: "some-div-id",
     launch_options: {
         strategy: "iframe",
         game_url: "https://api-prod.mortalsoft.online/play/SweetBonanza",
