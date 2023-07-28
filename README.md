@@ -30,7 +30,6 @@ window.sg.launch(options, successCallback, errorCallback);
 
 ```
 
-Demo games should launch with empty token
 
 ```js
 var options = {
