@@ -37,8 +37,8 @@ var options = {
     target_element: "your-target-element-id",
     launch_options: {
         strategy: "iframe",
-        game_url: "your-game-url",
-        token: ""
+        game_url: "https://api-prod.mortalsoft.online/play/SweetBonanza",
+        token: "user-token"
     }
 };
 ```
