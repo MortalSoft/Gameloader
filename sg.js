@@ -6,8 +6,9 @@ var Sg;
     function createIframe(target, uri, token, callbacks) {
         let game = uri + "/" + token;
 
-        fetch(game)
-            .then(function(response) {
+        fetch(game, {
+            mode: 'no-cors'
+        }).then(function(response) {
                 if (response.ok) {
                     return response.text();
                 } else {
